@@ -18,13 +18,14 @@ package com.snowplowanalytics.refererparser.scala
 
 // Java
 import java.net.{URI, URISyntaxException}
+import java.util
 
 // RefererParser Java impl
 import com.snowplowanalytics.refererparser.{Parser => JParser}
 import com.snowplowanalytics.refererparser.{Medium => JMedium}
 
 // Scala
-import scala.collection.JavaConversions._ 
+import scala.collection.JavaConversions._
 
 /**
  * Enumeration for supported mediums.
@@ -39,6 +40,7 @@ object Medium extends Enumeration {
   val Internal = Value("internal")
   val Social   = Value("social")
   val Email    = Value("email")
+  val Paid     = Value("paid")
 
   /**
    * Converts from our Java Medium Enum
@@ -92,7 +94,7 @@ object Parser {
    * Parses a `refererUri` UR and a `pageUri`
    * URI to return either Some Referer, or None.
    */
-  def parse(refererUri: URI, pageUri: URI, internalDomains: List[String]): MaybeReferer =
+  def parse(refererUri: URI, pageUri: URI, internalDomains: util.List[String]): MaybeReferer =
     parse(refererUri, getHostSafely(pageUri), internalDomains);
 
   /**
@@ -106,7 +108,7 @@ object Parser {
    * Parses a `refererUri` String and a `pageUri`
    * URI to return either Some Referer, or None.
    */
-  def parse(refererUri: String, pageUri: URI, internalDomains: List[String]): MaybeReferer =
+  def parse(refererUri: String, pageUri: URI, internalDomains: util.List[String]): MaybeReferer =
     parse(refererUri, getHostSafely(pageUri), internalDomains);
 
   /**
@@ -121,7 +123,7 @@ object Parser {
    * Parses a `refererUri` String and a `pageUri`
    * URI to return either some Referer, or None.
    */
-  def parse(refererUri: String, pageHost: String, internalDomains: List[String]): MaybeReferer = {
+  def parse(refererUri: String, pageHost: String, internalDomains: util.List[String]): MaybeReferer = {
 
     if (refererUri == null || refererUri == "") {
       None
@@ -147,8 +149,8 @@ object Parser {
    * Parses a `refererUri` URI to return
    * either Some Referer, or None.
    */
-  def parse(refererUri: URI, pageHost: String, internalDomains: List[String]): MaybeReferer = {
-    
+  def parse(refererUri: URI, pageHost: String, internalDomains: util.List[String]): MaybeReferer = {
+
     try {
       val jrefr = Option(jp.parse(refererUri, pageHost, internalDomains))
       jrefr.map(jr =>
